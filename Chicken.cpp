@@ -3,13 +3,8 @@
 Chicken::Chicken(float x, float y, float speed, ChickenType type, bool isFacingLeft, float size, int points)
     : x(x), y(y), speed(speed), type(type), points(points), currentFrame(0) {
     initTextures();
-    sprite.setTextureRect(IntRect(0, 0, FRAME_WIDTH, FRAME_HEIGHT));
-
-    float scaleX = isFacingLeft ? (size * (-1)) : size;
-    sprite.setScale(scaleX, size);
+    initSprite(isFacingLeft, size);
 }
-
-
 
 Chicken::~Chicken() {
 
@@ -38,6 +33,7 @@ void Chicken::initTextures() {
     }
 }
 
+
 void Chicken::move() {
     y += speed;  
     sprite.setPosition(x, y);
@@ -49,7 +45,23 @@ void Chicken::draw(RenderTarget& target, const RenderStates states) const {
 }
 
 float Chicken::getX() const { return x; }
+
 float Chicken::getY() const { return y; }
+
+
+FloatRect Chicken::getGlobalBounds() const
+{
+    return this->sprite.getGlobalBounds();
+}
+
+ChickenType Chicken::getType() const {
+    return type;
+}
+
+
+int Chicken::getPoints() const {
+    return points;
+}
 
 void Chicken::updateAnimation() {
     if (animationClock.getElapsedTime().asSeconds() > FRAME_TIME) {
@@ -59,4 +71,12 @@ void Chicken::updateAnimation() {
     }
 }
 
+void Chicken::initSprite(bool isFacingLeft, float size) {
+    sprite.setTexture(textureMap[type]);
+    sprite.setTextureRect(IntRect(0, 0, FRAME_WIDTH, FRAME_HEIGHT));
+
+    float scaleX = isFacingLeft ? (size * -1) : size;
+    sprite.setScale(scaleX, size);
+    sprite.setPosition(x, y);
+}
 

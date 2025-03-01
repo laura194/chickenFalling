@@ -1,11 +1,12 @@
 #include "Game.h"
 
+// Initialize game variables and default values
 void Game::initVariables() {
     this->window = nullptr;
     this->endGame = false;
     this->score = 0;
     this->hearts = 3;
-    this->heartsDisplay.resize(this->hearts);
+    this->heartsDisplay.resize(this->hearts); // Prepare hearts display
     this->highscore = 0;
     this->maxChickens = 20;
     this->chickenSpawnTimer = 0.f;
@@ -13,6 +14,7 @@ void Game::initVariables() {
 
 }
 
+// Set up the game window (size, title, icon, framerate limit)
 void Game::initWindow() {
     this->videoMode.width = 800;
     this->videoMode.height = 600;
@@ -28,7 +30,7 @@ void Game::initWindow() {
     }
 }
 
-
+// Load fonts for text rendering
 void Game::initFonts() {
     if (!this->font.loadFromFile("Fonts/pixel.ttf")) {
         cout << "ERROR::GAME::INITFONTS::Failed to load font" << endl;
@@ -36,7 +38,7 @@ void Game::initFonts() {
 }
 
 
-
+// Load all textures (background, score board, hearts)
 void Game::initTextures() {
     //Background texture start screen
     if (!this->backgroundTextureStartScreen.loadFromFile("Textures/startscreen_background.png")) {
@@ -57,9 +59,9 @@ void Game::initTextures() {
 
 }
 
+// Setup background sprite to fit window size
 void Game::initBackground() {
 
-    //Background
     this->background.setTexture(this->backgroundTexture);
     this->background.setScale(
         static_cast<float>(this->window->getSize().x) / this->background.getLocalBounds().width,
@@ -67,6 +69,7 @@ void Game::initBackground() {
     );
 }
 
+// Initialize the scoreboard text and graphic
 void Game::initScoreBoard() {
     this->scoreText.setFont(this->font);
     this->scoreText.setCharacterSize(30);
@@ -87,6 +90,7 @@ void Game::initScoreBoard() {
     this->scoreBoard.setScale(1.5f, 1.5f);
 }
 
+// Initialize hearts display
 void Game::initHearts() {
     for (int i = 0; i < this->heartsDisplay.size(); i++) {
         this->heartsDisplay[i].setTexture(this->heartTexture);
@@ -95,25 +99,24 @@ void Game::initHearts() {
     }
 }
 
+// Setup the initial start screen (background and start button)
 void Game::initStartScreen() {
-    //Background start screen
+    
     this->backgroundStartScreen.setTexture(this->backgroundTextureStartScreen);
     this->backgroundStartScreen.setScale(
         static_cast<float>(this->window->getSize().x) / this->backgroundStartScreen.getLocalBounds().width,
         static_cast<float>(this->window->getSize().y) / this->backgroundStartScreen.getLocalBounds().height
     );
-    this->backgroundStartScreen.setTexture(this->backgroundTextureStartScreen);
     this->showStartScreen = true;
 
-
-    // Start-Button (neues Design)
+    // Invisible clickable button for starting the game
     this->startButton.setSize(Vector2f(220.f, 60.f));
     this->startButton.setFillColor(Color(0, 0, 0, 0)); 
     this->startButton.setPosition(290.f, 410.f);
 }
 
 
-
+// Constructor
 Game::Game() {
     this->initVariables();
     this->initWindow();
@@ -124,22 +127,25 @@ Game::Game() {
     this->initHearts();
     this->loadHighScore();
     this->initStartScreen();
-
 }
 
+// Destructor
 Game::~Game() {
     delete this->window;
 }
 
+// Check if window is still open
 bool Game::running() const {
     return this->window->isOpen();
 
 }
 
+// Check if game has ended
 bool Game::getEndGame() const {
     return this->endGame;
 }
 
+// Handle input events (window close, escape key, mouse click)
 void Game::pollEvents() {
     while (this->window->pollEvent(this->ev)) {
         switch (this->ev.type) {
@@ -156,7 +162,7 @@ void Game::pollEvents() {
                 Vector2f mousePos = this->window->mapPixelToCoords(Mouse::getPosition(*this->window));
 
                 if (this->startButton.getGlobalBounds().contains(mousePos)) {
-                    this->showStartScreen = false; // Spiel starten
+                    this->showStartScreen = false; 
                 }
             }
             break;
@@ -167,6 +173,7 @@ void Game::pollEvents() {
     }
 }
 
+// Spawn new chickens at random positions and types
 void Game::spawnChickens() {
     const float windowWidth = static_cast<float>(this->window->getSize().x);
     constexpr float size = 4.f;
@@ -175,6 +182,7 @@ void Game::spawnChickens() {
     ChickenType type;
     int points = 1;
 
+    // Randomize chicken type
     if (const int randomType = rand() % 1000; randomType == 0) {
         type = ChickenType::DUCK;
         speed = 4.f;
@@ -195,6 +203,7 @@ void Game::spawnChickens() {
         type = ChickenType::GRAY;
     }
 
+    // Randomly spawn from left or right
     bool isFacingLeft = rand() % 2 == 0;
 
     float x;
@@ -210,14 +219,12 @@ void Game::spawnChickens() {
 
 }
 
-
-
-
+// Update all game logic
 void Game::update() {
     this->pollEvents();
 
     if (this->showStartScreen) {
-        return; // Warten, bis das Spiel gestartet wird
+        return; 
     }
 
     if (!this->endGame) {
@@ -233,13 +240,16 @@ void Game::update() {
     }
 }
 
+// Update mouse position relative to window
 void Game::updateMousePositions() {
     this->mousePosWindow = Mouse::getPosition(*this->window);
     this->mousePosView = this->window->mapPixelToCoords(this->mousePosWindow);
 
 }
 
+// Update chicken movement and check for collisions
 void Game::updateChickens() {
+    // Spawn new chicken if timer reaches max and not exceeding max chickens
     if (this->chickens.size() < this->maxChickens) {
         if (this->chickenSpawnTimer >= this->chickenSpawnTimerMax) {
             this->spawnChickens();
@@ -250,28 +260,28 @@ void Game::updateChickens() {
         }
     }
 
-    for (int i = 0; i < this->chickens.size();) {
+    // Update all existing chickens (movement, check if missed)
+    for (int i = 0; i < this->chickens.size(); i++) {
         this->chickens[i].move();
 
+        // Chicken falls off screen — player loses heart
         if (this->chickens[i].getY() > static_cast<float>(this->window->getSize().y)) {
             this->chickens.erase(this->chickens.begin() + i);
             this->hearts -= 1;
         }
-        else {
-            ++i;
-        }
     }
 
+    // Check for mouse clicks on chickens (removing them and increasing score)
     if (Mouse::isButtonPressed(Mouse::Left)) {
         if (!this->mouseHeld) {
             this->mouseHeld = true;
-            for (int i = 0; i < this->chickens.size();) {
+            for (int i = 0; i < this->chickens.size(); ++i) {
                 if (FloatRect chickenBounds = this->chickens[i].getGlobalBounds(); chickenBounds.contains(this->mousePosView)) {
                     this->score += chickens[i].getPoints();
                     this->chickens.erase(this->chickens.begin() + i);
-                    break;
+                    break; // Only allow one chicken per click
                 }
-                ++i;
+                
             }
         }
     }
@@ -280,7 +290,7 @@ void Game::updateChickens() {
     }
 }
 
-
+// Update score and highscore text strings
 void Game::updateText() {
     stringstream scoreStream;
     scoreStream << this->score;
@@ -290,31 +300,27 @@ void Game::updateText() {
     this->highscoreText.setString(highscoreStream.str());
 }
 
+// Update the heart display to match current heart count
 void Game::updateHearts() {
     for (size_t i = 0; i < this->heartsDisplay.size(); i++) {
         if (i < this->hearts) {
             this->heartsDisplay[i].setColor(Color::White);
         }
         else {
-            this->heartsDisplay[i].setColor(Color(100, 100, 100)); //Sets color to gray
+            this->heartsDisplay[i].setColor(Color(100, 100, 100)); 
         }
     }
 }
 
+// Render all graphics for the game
 void Game::render() {
     this->window->clear();
     if (this->showStartScreen) {
-        // Starbildschirm anzeigen
-        this->window->draw(this->backgroundStartScreen);
-
-        this->window->draw(this->startButton);
-        this->window->draw(this->startButtonText);
+        this->renderStartScreen(*this->window);
     }
     else {
-        //Background
-        this->window->draw(this->background);
-        this->window->draw(this->scoreBoard);
-        //Draw game objects
+        
+		this->renderMainBackground(*this->window);
         this->renderText(*this->window);
         this->renderHearts(*this->window);
         this->renderChickens(*this->window);
@@ -323,24 +329,39 @@ void Game::render() {
 
 }
 
+// Draw the start screen with background and invisible start button
+void Game::renderStartScreen(RenderTarget& target) {
+    target.draw(this->backgroundStartScreen);
+}
+
+// Draw the main game background and the scoreboard
+void Game::renderMainBackground(RenderTarget& target) {
+    target.draw(this->background);
+    target.draw(this->scoreBoard);
+}
+
+
+// Draw all the chickens
 void Game::renderChickens(RenderTarget& target) {
     for (auto& chicken : this->chickens) {
         target.draw(chicken);
     }
 }
 
-
+// Draw all text (score and highscore)
 void Game::renderText(RenderTarget& target) const {
     target.draw(this->scoreText);
     target.draw(this->highscoreText);
 }
 
+// Draw the player's remaining hearts
 void Game::renderHearts(RenderTarget& target) {
     for (auto& heart : this->heartsDisplay) {
         target.draw(heart);
     }
 }
 
+// Save highscore to file if the current score is higher
 void Game::saveHighScore() {
     if (this->score > this->highscore) {
         this->highscore = this->score;
@@ -352,14 +373,14 @@ void Game::saveHighScore() {
     }
 
 }
-
+// Load highscore from file
 void Game::loadHighScore() {
     ifstream file("highscore.txt");
     if (file.is_open()) {
         file >> this->highscore;
     }
     else {
-        this->highscore = 0;
+        this->highscore = 0; // No highscore file found — default to zero
     }
     file.close();
 }
