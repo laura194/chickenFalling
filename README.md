@@ -19,13 +19,9 @@
 ## 🛠️ Installation
 
 ### How to Install and Run
-1. Clone the repository:  
-    ```sh
-    git clone https://github.com/laura194/chicken_falling.git
-    ```
-2. Navigate to the `x64/Release` folder.
-3. Run the file **`chicken_falling.exe`** to start the game.
-4. **Important:** Do not move `chicken_falling.exe` out of the folder, as it requires the DLL files in the same directory to run properly.
+1. Navigate to the `x64/Release` folder.
+2. Run the file **`chicken_falling.exe`** to start the game.
+3. **Important:** Do not move `chicken_falling.exe` out of the folder, as it requires the DLL files in the same directory to run properly.
 
 ## 🎯 How to Play
 1. Use your mouse to click on falling chickens.

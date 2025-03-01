@@ -4,7 +4,6 @@
 
 int main() {
     Game game;
-    //TODO: ICON HINZUFÜGEN
     while (game.running() && !game.getEndGame()) {
         //Update
         game.update();
