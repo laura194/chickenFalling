@@ -149,8 +149,6 @@ private:
      */
     void initStartScreen();
 
-
-
     /**
      * @brief Updates the current mouse positions.
      */
@@ -200,8 +198,6 @@ private:
      * @param target Render target to draw the hearts on.
      */
     void renderHearts(RenderTarget& target);
-
-
 
     /**
      * @brief Saves the current highscore to a file.
