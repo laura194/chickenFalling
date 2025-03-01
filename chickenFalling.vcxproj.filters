@@ -36,4 +36,39 @@
   <ItemGroup>
     <None Include="README.md" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="highscore.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Textures\background.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Textures\startscreen_background.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Textures\score_board.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Textures\icon.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Textures\heart.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Textures\Chicken_Textures\chicken_brown.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Textures\Chicken_Textures\chicken_duck.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Textures\Chicken_Textures\chicken_gray.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Textures\Chicken_Textures\chicken_rainbow.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Textures\Chicken_Textures\chicken_white.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
 </Project>

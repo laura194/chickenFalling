@@ -154,6 +154,21 @@
   <ItemGroup>
     <None Include="README.md" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="highscore.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Textures\background.png" />
+    <Image Include="Textures\Chicken_Textures\chicken_brown.png" />
+    <Image Include="Textures\Chicken_Textures\chicken_duck.png" />
+    <Image Include="Textures\Chicken_Textures\chicken_gray.png" />
+    <Image Include="Textures\Chicken_Textures\chicken_rainbow.png" />
+    <Image Include="Textures\Chicken_Textures\chicken_white.png" />
+    <Image Include="Textures\heart.png" />
+    <Image Include="Textures\icon.png" />
+    <Image Include="Textures\score_board.png" />
+    <Image Include="Textures\startscreen_background.png" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
